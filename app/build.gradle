@@ -11,6 +11,8 @@ android {
         targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
+
+        buildConfigField 'String', 'API_KEY', '"28f38130-a9df-451a-a0cf-9fd7cf2ae733"'
     }
     buildTypes {
         release {
@@ -53,4 +55,7 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide_version"
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide_version"
 
+    //Dagger2
+    implementation "com.google.dagger:dagger:$dagger2_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger2_version"
 }
