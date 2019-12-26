@@ -20,6 +20,7 @@ class CatGalleryPresenter(private val router: Router,
             .subscribe(
                 {
                     Log.d("DEBUG", it.toString())
+                    viewState.showCatList(it)
                 },
                 {
 
