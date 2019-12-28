@@ -11,6 +11,7 @@ android {
         targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary true
 
         buildConfigField 'String', 'API_KEY', '"28f38130-a9df-451a-a0cf-9fd7cf2ae733"'
         buildConfigField 'String', 'BASE_URL', '"https://api.thecatapi.com"'

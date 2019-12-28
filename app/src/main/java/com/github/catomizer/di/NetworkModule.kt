@@ -1,6 +1,7 @@
 package com.github.catomizer.di
 
 import com.github.catomizer.BuildConfig
+import com.github.catomizer.error.NetworkErrorHandler
 import com.github.catomizer.network.AuthInterceptor
 import com.github.catomizer.network.CatApi
 import dagger.Module
@@ -39,4 +40,8 @@ class NetworkModule {
     @Provides
     fun provideAuthInterceptor(): AuthInterceptor =
         AuthInterceptor()
+
+    @Singleton
+    @Provides
+    fun provideNetworkErrorHandler(): NetworkErrorHandler = NetworkErrorHandler()
 }
