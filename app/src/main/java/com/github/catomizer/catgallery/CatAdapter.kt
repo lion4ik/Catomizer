@@ -7,16 +7,16 @@ import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
 import com.github.catomizer.R
-import com.github.catomizer.base.OnSelectedItemsCallback
+import com.github.catomizer.base.OnSelectionItemsListener
 import com.github.catomizer.network.model.CatApiModel
 import kotlinx.android.synthetic.main.item_cat.view.*
 
 class CatAdapter(
-    private val onSelectedItemsCallback: OnSelectedItemsCallback<CatApiModel>,
+    private val onSelectionItemsListener: OnSelectionItemsListener,
     private val displayWidth: Int
 ) : ListAdapter<CatApiModel, CatViewHolder>(diffUtilCallback) {
 
-    private val selectedItems: MutableSet<Int> = mutableSetOf()
+    private val selectedItemsPositions: MutableSet<Int> = mutableSetOf()
     private var isSelectionMode = false
 
     companion object {
@@ -32,8 +32,16 @@ class CatAdapter(
 
     fun clearSelection() {
         isSelectionMode = false
-        selectedItems.clear()
+        selectedItemsPositions.clear()
         notifyDataSetChanged()
+    }
+
+    fun getSelectedItems(): List<CatApiModel> {
+        val selectedCatImages: MutableList<CatApiModel> = mutableListOf()
+        for (selectedItemPosition in selectedItemsPositions) {
+            selectedCatImages.add(getItem(selectedItemPosition))
+        }
+        return selectedCatImages
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatViewHolder {
@@ -45,18 +53,18 @@ class CatAdapter(
             )
         )
         holder.itemView.setOnLongClickListener {
-            onSelectedItemsCallback.onStartSelection()
-            selectedItems.add(holder.adapterPosition)
+            onSelectionItemsListener.onStartSelection()
+            selectedItemsPositions.add(holder.adapterPosition)
             notifyItemChanged(holder.adapterPosition)
             isSelectionMode = true
             true
         }
         holder.itemView.setOnClickListener {
             if (isSelectionMode) {
-                if (selectedItems.contains(holder.adapterPosition)) {
-                    selectedItems.remove(holder.adapterPosition)
+                if (selectedItemsPositions.contains(holder.adapterPosition)) {
+                    selectedItemsPositions.remove(holder.adapterPosition)
                 } else {
-                    selectedItems.add(holder.adapterPosition)
+                    selectedItemsPositions.add(holder.adapterPosition)
                 }
                 notifyItemChanged(holder.adapterPosition)
             }
@@ -65,7 +73,7 @@ class CatAdapter(
     }
 
     override fun onBindViewHolder(holder: CatViewHolder, position: Int) {
-        if (selectedItems.contains(position)) {
+        if (selectedItemsPositions.contains(position)) {
             holder.itemView.image_selected.visibility = View.VISIBLE
             holder.itemView.image_cat.alpha = 0.5F
         } else {

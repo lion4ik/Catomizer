@@ -19,4 +19,4 @@ fun Activity.getDisplaySize(): Point {
 fun Context.dpToPx(dp: Float): Float =
     dp * (resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
 
-fun View.showSnack(@StringRes resId: Int) = Snackbar.make(this, resId, Snackbar.LENGTH_SHORT).show()
+fun View.showSnack(@StringRes resId: Int, duration: Int = Snackbar.LENGTH_SHORT) = Snackbar.make(this, resId, duration).show()

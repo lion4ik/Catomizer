@@ -1,5 +1,6 @@
 package com.github.catomizer.di
 
+import com.github.catomizer.DownloadHelper
 import com.github.catomizer.catgallery.CatGalleryPresenter
 import com.github.catomizer.catgallery.repository.CatImagesRepository
 import com.github.catomizer.error.ErrorHandler
@@ -14,7 +15,8 @@ class PresenterModule {
     fun provideCatGalleryPresenter(
         router: Router,
         catImagesRepository: CatImagesRepository,
+        downloadHelper: DownloadHelper,
         errorHandler: ErrorHandler
     ): CatGalleryPresenter =
-        CatGalleryPresenter(router, catImagesRepository, errorHandler)
+        CatGalleryPresenter(router, catImagesRepository, downloadHelper, errorHandler)
 }

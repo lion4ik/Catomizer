@@ -6,4 +6,7 @@
     <string name="cat_gallery_empty">No cat images available</string>
     <string name="cat_gallery_try_again">Try again</string>
     <string name="cat_gallery_title">Cat gallery</string>
+    <string name="cat_gallery_permission_rationale">It is required external storage permission to make it possible to download files</string>
+    <string name="cat_gallery_permission_denied">External storage permission denied. Cannot proceed with downloading</string>
+    <string name="cat_gallery_permission_never_ask">You have chosen not to ask permission again. If you want to give permission you need to go app settings</string>
 </resources>

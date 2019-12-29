@@ -1,5 +1,6 @@
 package com.github.catomizer.catgallery
 
+import com.github.catomizer.DownloadHelper
 import com.github.catomizer.base.BasePresenter
 import com.github.catomizer.catgallery.repository.CatImagesRepository
 import com.github.catomizer.error.ErrorHandler
@@ -13,6 +14,7 @@ import ru.terrakok.cicerone.Router
 class CatGalleryPresenter(
     private val router: Router,
     private val catImagesRepository: CatImagesRepository,
+    private val downloadHelper: DownloadHelper,
     private val errorHandler: ErrorHandler
 ) : BasePresenter<CatGalleryView>() {
 
@@ -47,6 +49,12 @@ class CatGalleryPresenter(
                 }
             )
             .apply { addDisposable(this) }
+    }
+
+    fun downloadCatImages(catImages: List<CatApiModel>) {
+        for (catImage in catImages) {
+            downloadHelper.downloadFile(catImage.url)
+        }
     }
 
 }

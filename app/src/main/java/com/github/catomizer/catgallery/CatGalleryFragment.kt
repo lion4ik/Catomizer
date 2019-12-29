@@ -1,23 +1,27 @@
 package com.github.catomizer.catgallery
 
+import android.Manifest
 import android.os.Bundle
 import android.view.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.catomizer.R
-import com.github.catomizer.base.OnSelectedItemsCallback
+import com.github.catomizer.base.OnSelectionItemsListener
 import com.github.catomizer.di.ComponentManager
 import com.github.catomizer.getDisplaySize
 import com.github.catomizer.network.model.CatApiModel
 import com.github.catomizer.showSnack
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_cat_gallery.*
 import kotlinx.android.synthetic.main.toolbar.*
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import permissions.dispatcher.*
 
+@RuntimePermissions
 class CatGalleryFragment : MvpAppCompatFragment(R.layout.fragment_cat_gallery), CatGalleryView,
-    OnSelectedItemsCallback<CatApiModel> {
+    OnSelectionItemsListener {
 
     @InjectPresenter
     lateinit var presenter: CatGalleryPresenter
@@ -29,7 +33,12 @@ class CatGalleryFragment : MvpAppCompatFragment(R.layout.fragment_cat_gallery), 
 
     private val actionModelCallback: ActionMode.Callback = object : ActionMode.Callback {
 
-        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+            val adapter = recycler_cats.adapter
+            if (adapter is CatAdapter) {
+                downloadSelectedItemsWithPermissionCheck(adapter.getSelectedItems().toMutableList())
+            }
+            mode.finish()
             return true
         }
 
@@ -110,6 +119,37 @@ class CatGalleryFragment : MvpAppCompatFragment(R.layout.fragment_cat_gallery), 
         toolbar.startActionMode(actionModelCallback)
     }
 
-    override fun onItemsSelected(items: List<CatApiModel>) {
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    fun onWriteExternalStorageDenied() {
+        view?.showSnack(R.string.cat_gallery_permission_denied, Snackbar.LENGTH_LONG)
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    fun onWriteExternalStorageNeverAskAgain() {
+        view?.showSnack(R.string.cat_gallery_permission_never_ask, Snackbar.LENGTH_LONG)
+    }
+
+    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    fun showRationalWriteExternalStorage(permissionRequest: PermissionRequest) {
+        view?.showSnack(R.string.cat_gallery_permission_rationale, Snackbar.LENGTH_LONG)
+        permissionRequest.proceed()
+    }
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    fun downloadSelectedItems(items: List<CatApiModel>) {
+        presenter.downloadCatImages(items)
+    }
+
+    override fun shouldShowRequestPermissionRationale(permission: String): Boolean =
+        Manifest.permission.WRITE_EXTERNAL_STORAGE == permission
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // NOTE: delegate the permission handling to generated method
+        onRequestPermissionsResult(requestCode, grantResults)
     }
 }

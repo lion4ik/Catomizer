@@ -76,4 +76,8 @@ dependencies {
     //Dagger2
     implementation "com.google.dagger:dagger:$dagger2_version"
     kapt "com.google.dagger:dagger-compiler:$dagger2_version"
+
+    //Permission dispatcher
+    implementation "org.permissionsdispatcher:permissionsdispatcher:$permission_dispatcher_version"
+    kapt "org.permissionsdispatcher:permissionsdispatcher-processor:$permission_dispatcher_version"
 }
