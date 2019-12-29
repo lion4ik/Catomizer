@@ -13,7 +13,6 @@ import com.github.catomizer.base.BaseFragment
 import com.github.catomizer.base.OnSelectionItemsListener
 import com.github.catomizer.data.network.model.CatApiModel
 import com.github.catomizer.di.ComponentManager
-import com.github.catomizer.ui.getDisplaySize
 import com.github.catomizer.ui.showSnack
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_cat_gallery.*
@@ -30,6 +29,7 @@ class CatGalleryFragment : BaseFragment(R.layout.fragment_cat_gallery), CatGalle
     lateinit var presenter: CatGalleryPresenter
 
     private var isLoading = false
+    private val catAdapter: CatAdapter = CatAdapter(this)
 
     @ProvidePresenter
     fun providePresenter(): CatGalleryPresenter =
@@ -45,7 +45,7 @@ class CatGalleryFragment : BaseFragment(R.layout.fragment_cat_gallery), CatGalle
         val gridLayoutManager = GridLayoutManager(context, 2)
         recycler_cats.layoutManager = gridLayoutManager
         recycler_cats.setHasFixedSize(true)
-        recycler_cats.adapter = CatAdapter(this, requireActivity().getDisplaySize().x)
+        recycler_cats.adapter = catAdapter
         recycler_cats.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -90,26 +90,20 @@ class CatGalleryFragment : BaseFragment(R.layout.fragment_cat_gallery), CatGalle
     }
 
     override fun showCatList(catList: List<CatApiModel>) {
-        val adapter = recycler_cats.adapter
-        if (adapter is CatAdapter) {
-            adapter.submitList(catList)
-            group_empty_list.visibility = View.GONE
-        }
+        catAdapter.submitList(catList)
+        group_empty_list.visibility = View.GONE
     }
 
     override fun onStartSelection() {
         val actionModelCallback: ActionMode.Callback = object : ActionMode.Callback {
 
             override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-                val adapter = recycler_cats.adapter
-                if (adapter is CatAdapter) {
-                    val selectedItems = adapter.getSelectedItems().toMutableList()
-                    when (item.itemId) {
-                        R.id.menu_item_download -> {
-                            downloadSelectedItemsWithPermissionCheck(selectedItems)
-                        }
-                        R.id.menu_item_favorite -> presenter.onAddToFavoriteClicked(selectedItems)
+                val selectedItems = catAdapter.getSelectedItems().toMutableList()
+                when (item.itemId) {
+                    R.id.menu_item_download -> {
+                        downloadSelectedItemsWithPermissionCheck(selectedItems)
                     }
+                    R.id.menu_item_favorite -> presenter.onAddToFavoriteClicked(selectedItems)
                 }
                 mode.finish()
                 return true
@@ -125,10 +119,7 @@ class CatGalleryFragment : BaseFragment(R.layout.fragment_cat_gallery), CatGalle
             }
 
             override fun onDestroyActionMode(mode: ActionMode) {
-                val adapter = recycler_cats.adapter
-                if (adapter is CatAdapter) {
-                    adapter.clearSelection()
-                }
+                catAdapter.clearSelection()
             }
         }
         toolbar.startActionMode(actionModelCallback)

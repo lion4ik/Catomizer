@@ -8,8 +8,6 @@ object ComponentManager {
     fun initComponents(appContext: Context) {
         appComponent = DaggerAppComponent.builder()
             .appModule(AppModule(appContext))
-            .navigationModule(NavigationModule())
-            .networkModule(NetworkModule())
             .build()
     }
 }

@@ -13,7 +13,6 @@ import com.github.catomizer.base.OnSelectionItemsListener
 import com.github.catomizer.catgallery.CatAdapter
 import com.github.catomizer.data.network.model.CatApiModel
 import com.github.catomizer.di.ComponentManager
-import com.github.catomizer.ui.getDisplaySize
 import com.github.catomizer.ui.showSnack
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_favorite_cats.*
@@ -28,6 +27,8 @@ class FavoriteCatsFragment : BaseFragment(R.layout.fragment_favorite_cats), Favo
 
     @InjectPresenter
     lateinit var presenter: FavoriteCatsPresenter
+
+    private val catAdapter: CatAdapter = CatAdapter(this)
 
     @ProvidePresenter
     fun providePresenter(): FavoriteCatsPresenter =
@@ -47,7 +48,7 @@ class FavoriteCatsFragment : BaseFragment(R.layout.fragment_favorite_cats), Favo
         val gridLayoutManager = GridLayoutManager(context, 2)
         recycler_cats.layoutManager = gridLayoutManager
         recycler_cats.setHasFixedSize(true)
-        recycler_cats.adapter = CatAdapter(this, requireActivity().getDisplaySize().x)
+        recycler_cats.adapter = catAdapter
     }
 
     override fun showEmptyCatList() {
@@ -55,24 +56,18 @@ class FavoriteCatsFragment : BaseFragment(R.layout.fragment_favorite_cats), Favo
     }
 
     override fun showCatList(catList: List<CatApiModel>) {
-        val adapter = recycler_cats.adapter
-        if (adapter is CatAdapter) {
-            adapter.submitList(catList)
-            text_empty.visibility = View.GONE
-        }
+        catAdapter.submitList(catList)
+        text_empty.visibility = View.GONE
     }
 
     override fun onStartSelection() {
         val actionModelCallback: ActionMode.Callback = object : ActionMode.Callback {
 
             override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-                val adapter = recycler_cats.adapter
-                if (adapter is CatAdapter) {
-                    val selectedItems = adapter.getSelectedItems().toMutableList()
-                    when (item.itemId) {
-                        R.id.menu_item_download -> {
-                            downloadSelectedItemsWithPermissionCheck(selectedItems)
-                        }
+                val selectedItems = catAdapter.getSelectedItems().toMutableList()
+                when (item.itemId) {
+                    R.id.menu_item_download -> {
+                        downloadSelectedItemsWithPermissionCheck(selectedItems)
                     }
                 }
                 mode.finish()

@@ -12,8 +12,7 @@ import com.github.catomizer.data.network.model.CatApiModel
 import kotlinx.android.synthetic.main.item_cat.view.*
 
 class CatAdapter(
-    private val onSelectionItemsListener: OnSelectionItemsListener,
-    private val displayWidth: Int
+    private val onSelectionItemsListener: OnSelectionItemsListener
 ) : ListAdapter<CatApiModel, CatViewHolder>(diffUtilCallback) {
 
     private val selectedItemsPositions: MutableSet<Int> = mutableSetOf()
@@ -80,12 +79,9 @@ class CatAdapter(
             holder.itemView.image_selected.visibility = View.GONE
             holder.itemView.image_cat.alpha = 1F
         }
-        val height =
-            holder.itemView.context.resources.getDimensionPixelSize(R.dimen.cat_image_height)
         Glide.with(holder.itemView)
             .load(getItem(position).url)
             .placeholder(R.drawable.ic_placeholder)
-            .override(displayWidth / 2, height)
             .centerCrop()
             .into(holder.itemView.image_cat)
     }

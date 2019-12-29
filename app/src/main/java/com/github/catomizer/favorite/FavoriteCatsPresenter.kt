@@ -38,7 +38,7 @@ class FavoriteCatsPresenter(
                 {
                     errorHandler.proceed(it) { errorResId -> viewState.showMessage(errorResId) }
                 }
-            ).apply { addDisposable(this) }
+            ).connect()
     }
 
     fun onBackPressed() = router.exit()

@@ -1,6 +1,3 @@
 package com.github.catomizer.error
 
-class NoInternetException : BaseException {
-    constructor() : super()
-    constructor(cause: Throwable) : super(cause)
-}
+class NoInternetException(cause: Throwable? = null) : BaseException(cause)

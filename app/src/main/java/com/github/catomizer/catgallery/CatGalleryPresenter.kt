@@ -54,7 +54,7 @@ class CatGalleryPresenter(
                     viewState.showEmptyCatList()
                 }
             )
-            .apply { addDisposable(this) }
+            .connect()
     }
 
     fun downloadCatImages(catImages: List<CatApiModel>) {
@@ -73,6 +73,6 @@ class CatGalleryPresenter(
                 { viewState.showMessage(R.string.cat_gallery_add_favorite_success) },
                 { viewState.showMessage(R.string.cat_gallery_add_favorite_error) }
             )
-            .apply { addDisposable(this) }
+            .connect()
     }
 }

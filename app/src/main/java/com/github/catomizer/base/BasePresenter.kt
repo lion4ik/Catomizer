@@ -9,7 +9,7 @@ abstract class BasePresenter<V : MvpView>: MvpPresenter<V>() {
 
     private val disposables: CompositeDisposable = CompositeDisposable()
 
-    fun addDisposable(disposable: Disposable) = disposables.add(disposable)
+    protected fun Disposable.connect() = disposables.add(this)
 
     override fun onDestroy() {
         super.onDestroy()
