@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Catomizer</string>
+    <string name="error_unknown">Unknown error. Please try again later.</string>
+    <string name="error_service_unavailable">Service is unavailable. Please try again later.</string>
+    <string name="error_network">Network is unavailable. Please check your connection and try again.</string>
+    <string name="cat_gallery_empty">No cat images available</string>
+    <string name="cat_gallery_try_again">Try again</string>
+    <string name="cat_gallery_title">Cat gallery</string>
 </resources>

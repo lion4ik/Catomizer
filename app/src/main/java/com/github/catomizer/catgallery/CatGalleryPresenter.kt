@@ -2,6 +2,7 @@ package com.github.catomizer.catgallery
 
 import com.github.catomizer.base.BasePresenter
 import com.github.catomizer.catgallery.repository.CatImagesRepository
+import com.github.catomizer.error.ErrorHandler
 import com.github.catomizer.network.model.CatApiModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -11,7 +12,8 @@ import ru.terrakok.cicerone.Router
 @InjectViewState
 class CatGalleryPresenter(
     private val router: Router,
-    private val catImagesRepository: CatImagesRepository
+    private val catImagesRepository: CatImagesRepository,
+    private val errorHandler: ErrorHandler
 ) : BasePresenter<CatGalleryView>() {
 
     companion object {
@@ -40,6 +42,8 @@ class CatGalleryPresenter(
                 },
                 {
                     viewState.setLoadingVisibility(false)
+                    errorHandler.proceed(it) { errorResId -> viewState.showError(errorResId) }
+                    viewState.showEmptyCatList()
                 }
             )
             .apply { addDisposable(this) }

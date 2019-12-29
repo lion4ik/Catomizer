@@ -10,5 +10,7 @@ interface CatGalleryView : ShowErrorView {
 
     fun setLoadingVisibility(isVisible: Boolean)
 
+    fun showEmptyCatList()
+
     fun showCatList(catList: List<CatApiModel>)
 }

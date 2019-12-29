@@ -57,6 +57,7 @@ class CatGalleryFragment : MvpAppCompatFragment(R.layout.fragment_cat_gallery), 
     }
 
     private fun initUI() {
+        toolbar.setTitle(R.string.cat_gallery_title)
         val gridLayoutManager = GridLayoutManager(context, 2)
         recycler_cats.layoutManager = gridLayoutManager
         recycler_cats.setHasFixedSize(true)
@@ -79,6 +80,9 @@ class CatGalleryFragment : MvpAppCompatFragment(R.layout.fragment_cat_gallery), 
                 }
             }
         })
+        button_try_again.setOnClickListener {
+            presenter.requestCatImages()
+        }
     }
 
     override fun setLoadingVisibility(isVisible: Boolean) {
@@ -86,10 +90,15 @@ class CatGalleryFragment : MvpAppCompatFragment(R.layout.fragment_cat_gallery), 
         isLoading = isVisible
     }
 
+    override fun showEmptyCatList() {
+        group_empty_list.visibility = View.VISIBLE
+    }
+
     override fun showCatList(catList: List<CatApiModel>) {
         val adapter = recycler_cats.adapter
         if (adapter is CatAdapter) {
             adapter.submitList(catList)
+            group_empty_list.visibility = View.GONE
         }
     }
 
