@@ -2,11 +2,12 @@ package com.github.catomizer.di
 
 import android.app.DownloadManager
 import android.content.Context
-import com.github.catomizer.DownloadHelper
 import com.github.catomizer.catgallery.repository.CatImagesRepository
+import com.github.catomizer.data.DownloadHelper
+import com.github.catomizer.data.db.FavoriteCatsDao
+import com.github.catomizer.data.network.CatApi
 import com.github.catomizer.error.ErrorHandler
 import com.github.catomizer.error.NetworkErrorMapper
-import com.github.catomizer.network.CatApi
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -22,9 +23,10 @@ class AppModule(private val appContext: Context) {
     @Provides
     fun provideCatImagesRepository(
         catApi: CatApi,
+        favoriteCatsDao: FavoriteCatsDao,
         networkErrorHandler: NetworkErrorMapper
     ): CatImagesRepository =
-        CatImagesRepository(catApi, networkErrorHandler)
+        CatImagesRepository(catApi, favoriteCatsDao, networkErrorHandler)
 
     @Singleton
     @Provides

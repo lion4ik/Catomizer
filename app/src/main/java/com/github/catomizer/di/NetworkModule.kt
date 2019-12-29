@@ -1,9 +1,8 @@
 package com.github.catomizer.di
 
 import com.github.catomizer.BuildConfig
+import com.github.catomizer.data.network.CatApi
 import com.github.catomizer.error.NetworkErrorMapper
-import com.github.catomizer.network.AuthInterceptor
-import com.github.catomizer.network.CatApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -30,16 +29,12 @@ class NetworkModule {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build()
 
     @Provides
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient =
+    fun provideOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)
-            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
             .build()
-
-    @Singleton
-    @Provides
-    fun provideAuthInterceptor(): AuthInterceptor =
-        AuthInterceptor()
 
     @Singleton
     @Provides

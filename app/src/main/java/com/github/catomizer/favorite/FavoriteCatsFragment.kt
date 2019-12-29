@@ -1,4 +1,4 @@
-package com.github.catomizer.catgallery
+package com.github.catomizer.favorite
 
 import android.Manifest
 import android.os.Bundle
@@ -7,33 +7,31 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.catomizer.R
 import com.github.catomizer.base.BaseFragment
 import com.github.catomizer.base.OnSelectionItemsListener
+import com.github.catomizer.catgallery.CatAdapter
 import com.github.catomizer.data.network.model.CatApiModel
 import com.github.catomizer.di.ComponentManager
 import com.github.catomizer.ui.getDisplaySize
 import com.github.catomizer.ui.showSnack
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_cat_gallery.*
+import kotlinx.android.synthetic.main.fragment_favorite_cats.*
 import kotlinx.android.synthetic.main.toolbar.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import permissions.dispatcher.*
 
 @RuntimePermissions
-class CatGalleryFragment : BaseFragment(R.layout.fragment_cat_gallery), CatGalleryView,
+class FavoriteCatsFragment : BaseFragment(R.layout.fragment_favorite_cats), FavoriteCatsView,
     OnSelectionItemsListener {
 
     @InjectPresenter
-    lateinit var presenter: CatGalleryPresenter
-
-    private var isLoading = false
+    lateinit var presenter: FavoriteCatsPresenter
 
     @ProvidePresenter
-    fun providePresenter(): CatGalleryPresenter =
-        ComponentManager.appComponent.provideCatGalleryPresenter()
+    fun providePresenter(): FavoriteCatsPresenter =
+        ComponentManager.appComponent.provideFavoriteCatsPresenter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,59 +39,26 @@ class CatGalleryFragment : BaseFragment(R.layout.fragment_cat_gallery), CatGalle
     }
 
     private fun initUI() {
-        initToolbar()
+        toolbar.setTitle(R.string.cat_favorites_title)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener {
+            presenter.onBackPressed()
+        }
         val gridLayoutManager = GridLayoutManager(context, 2)
         recycler_cats.layoutManager = gridLayoutManager
         recycler_cats.setHasFixedSize(true)
         recycler_cats.adapter = CatAdapter(this, requireActivity().getDisplaySize().x)
-        recycler_cats.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) //check for scroll down
-                {
-                    val visibleItemCount = gridLayoutManager.childCount
-                    val totalItemCount = gridLayoutManager.itemCount
-                    val pastVisibleItems = gridLayoutManager.findFirstVisibleItemPosition()
-
-                    if (!isLoading) {
-                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                            presenter.requestCatImages()
-                        }
-                    }
-                }
-            }
-        })
-        button_try_again.setOnClickListener {
-            presenter.requestCatImages()
-        }
-    }
-
-    private fun initToolbar() {
-        toolbar.inflateMenu(R.menu.menu_favorite)
-        toolbar.setTitle(R.string.cat_gallery_title)
-        toolbar.setOnMenuItemClickListener {
-            if (it.itemId == R.id.menu_item_favorite) {
-                presenter.onFavoritesClicked()
-            }
-            true
-        }
-    }
-
-    override fun setLoadingVisibility(isVisible: Boolean) {
-        progress_bar.visibility = if (isVisible) View.VISIBLE else View.GONE
-        isLoading = isVisible
     }
 
     override fun showEmptyCatList() {
-        group_empty_list.visibility = View.VISIBLE
+        text_empty.visibility = View.VISIBLE
     }
 
     override fun showCatList(catList: List<CatApiModel>) {
         val adapter = recycler_cats.adapter
         if (adapter is CatAdapter) {
             adapter.submitList(catList)
-            group_empty_list.visibility = View.GONE
+            text_empty.visibility = View.GONE
         }
     }
 
@@ -108,7 +73,6 @@ class CatGalleryFragment : BaseFragment(R.layout.fragment_cat_gallery), CatGalle
                         R.id.menu_item_download -> {
                             downloadSelectedItemsWithPermissionCheck(selectedItems)
                         }
-                        R.id.menu_item_favorite -> presenter.onAddToFavoriteClicked(selectedItems)
                     }
                 }
                 mode.finish()
@@ -116,7 +80,7 @@ class CatGalleryFragment : BaseFragment(R.layout.fragment_cat_gallery), CatGalle
             }
 
             override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-                mode.menuInflater.inflate(R.menu.menu_action_mode_cat_gallery, menu)
+                mode.menuInflater.inflate(R.menu.menu_action_mode_favorite, menu)
                 return true
             }
 

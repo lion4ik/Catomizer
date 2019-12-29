@@ -1,6 +1,6 @@
-package com.github.catomizer.network
+package com.github.catomizer.data.network
 
-import com.github.catomizer.network.model.CatApiModel
+import com.github.catomizer.data.network.model.CatApiModel
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

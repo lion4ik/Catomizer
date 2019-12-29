@@ -1,4 +1,4 @@
-package com.github.catomizer.catgallery
+package com.github.catomizer.favorite
 
 import com.github.catomizer.base.ShowMessageView
 import com.github.catomizer.data.network.model.CatApiModel
@@ -7,9 +7,7 @@ import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(OneExecutionStateStrategy::class)
-interface CatGalleryView : ShowMessageView {
-
-    fun setLoadingVisibility(isVisible: Boolean)
+interface FavoriteCatsView : ShowMessageView {
 
     fun showEmptyCatList()
 

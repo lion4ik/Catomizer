@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
 import com.github.catomizer.R
 import com.github.catomizer.base.OnSelectionItemsListener
-import com.github.catomizer.network.model.CatApiModel
+import com.github.catomizer.data.network.model.CatApiModel
 import kotlinx.android.synthetic.main.item_cat.view.*
 
 class CatAdapter(

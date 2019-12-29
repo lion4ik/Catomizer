@@ -3,7 +3,7 @@ package com.github.catomizer.base
 import androidx.annotation.StringRes
 import moxy.MvpView
 
-interface ShowErrorView: MvpView {
+interface ShowMessageView: MvpView {
 
-    fun showError(@StringRes strResId: Int)
+    fun showMessage(@StringRes strResId: Int)
 }

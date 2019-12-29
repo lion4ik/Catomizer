@@ -3,7 +3,7 @@ package com.github.catomizer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.catomizer.di.ComponentManager
-import com.github.catomizer.navigation.Screen
+import com.github.catomizer.navigation.CatGalleryScreen
 import com.github.catomizer.navigation.setLaunchScreen
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
@@ -22,7 +22,7 @@ class AppActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) {
-            navigator.setLaunchScreen(Screen.CatGalleryScreen())
+            navigator.setLaunchScreen(CatGalleryScreen())
         }
     }
 
