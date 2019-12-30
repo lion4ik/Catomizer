@@ -3,6 +3,7 @@ package com.github.catomizer.di
 import android.app.DownloadManager
 import android.content.Context
 import com.github.catomizer.catgallery.repository.CatImagesRepository
+import com.github.catomizer.data.CatModelMapper
 import com.github.catomizer.data.DownloadHelper
 import com.github.catomizer.data.db.FavoriteCatsDao
 import com.github.catomizer.data.network.CatApi
@@ -24,9 +25,10 @@ class AppModule(private val appContext: Context) {
     fun provideCatImagesRepository(
         catApi: CatApi,
         favoriteCatsDao: FavoriteCatsDao,
-        networkErrorHandler: NetworkErrorMapper
+        networkErrorHandler: NetworkErrorMapper,
+        catModelMapper: CatModelMapper
     ): CatImagesRepository =
-        CatImagesRepository(catApi, favoriteCatsDao, networkErrorHandler)
+        CatImagesRepository(catApi, favoriteCatsDao, networkErrorHandler, catModelMapper)
 
     @Singleton
     @Provides
@@ -41,4 +43,8 @@ class AppModule(private val appContext: Context) {
     @Provides
     fun provideDownloadHelper(downloadManager: DownloadManager): DownloadHelper =
         DownloadHelper(downloadManager)
+
+    @Singleton
+    @Provides
+    fun provideCatModelMapper(): CatModelMapper = CatModelMapper()
 }

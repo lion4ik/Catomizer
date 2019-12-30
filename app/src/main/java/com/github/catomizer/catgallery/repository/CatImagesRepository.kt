@@ -1,5 +1,6 @@
 package com.github.catomizer.catgallery.repository
 
+import com.github.catomizer.data.CatModelMapper
 import com.github.catomizer.data.db.FavoriteCatsDao
 import com.github.catomizer.data.network.CatApi
 import com.github.catomizer.data.network.model.CatApiModel
@@ -10,7 +11,8 @@ import io.reactivex.Single
 class CatImagesRepository(
     private val catApi: CatApi,
     private val favoriteCatsDao: FavoriteCatsDao,
-    private val networkErrorHandler: NetworkErrorMapper
+    private val networkErrorHandler: NetworkErrorMapper,
+    private val catModelMapper: CatModelMapper
 ) {
 
     fun getCatImages(limit: Int, page: Int): Single<List<CatApiModel>> =
@@ -18,10 +20,10 @@ class CatImagesRepository(
             .onErrorResumeNext { Single.error(networkErrorHandler.mapError(it)) }
 
     fun addCatToFavorites(cats: List<CatApiModel>): Completable =
-        favoriteCatsDao.insertCats(cats.map { it.toDbModel() })
+        favoriteCatsDao.insertCats(cats.map { catModelMapper.mapTo(it) })
 
     fun getAllFavorites(): Single<List<CatApiModel>> =
         favoriteCatsDao.getAll().map { catDbList ->
-            catDbList.map { it.toApiModel() }
+            catDbList.map { catModelMapper.mapFrom(it) }
         }
 }

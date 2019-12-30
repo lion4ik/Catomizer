@@ -84,10 +84,7 @@ class FavoriteCatsFragment : BaseFragment(R.layout.fragment_favorite_cats), Favo
             }
 
             override fun onDestroyActionMode(mode: ActionMode) {
-                val adapter = recycler_cats.adapter
-                if (adapter is CatAdapter) {
-                    adapter.clearSelection()
-                }
+                catAdapter.clearSelection()
             }
         }
         toolbar.startActionMode(actionModelCallback)
